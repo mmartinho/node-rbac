@@ -1,0 +1,30 @@
+********************************************************* 
+AVA: cursos.alura.com.br
+Formação: 
+Curso: Node.js: Controle de acesso e autorização com RBAC
+Data Início: 28/04/2021
+*********************************************************
+
+Capítulo 01: Controlando acesso com RBAC
+
+1. Baixamos o código inicial a partir de:
+        @see https://github.com/alura-cursos/1994-nodeauth3/archive/projeto-inicial.zip
+2. Descompactamos e executamos:
+        >npm install 
+   ...para que as dependencias fossem instaladas no projeto
+3. Criamos um middleware de autorização:
+        @see src\middlewares\autorizacao.js
+   ...utilizando-o na rota de delete do post:
+        @see src\posts\posts-rotas.js
+4. Adicionamos um novo campo ao banco de dados:
+        @see database.js
+   ...alterando a controlador, o modelo e o dao do usuário:
+        @see src\usuarios\usuarios-controlador.js
+        @see src\usuarios\usuarios-modelo.js
+        @see src\usuarios\usuarios-dao.js
+5. Aplicamos as listas de cargos possíveis nas rotas do post usando o middleware de autorização:
+        @see src\posts\posts-rotas.js
+
+Capítulo 02: Política de acesso
+
+1. 
