@@ -1,35 +1,49 @@
 const usuariosControlador = require('./usuarios-controlador')
 const middlewaresAutenticacao = require('./middlewares-autenticacao')
+const autorizacao = require('../middlewares/autorizacao')
 
 module.exports = app => {
   app
     .route('/usuario/atualiza_token')
+    /** Atualiza o token bearer usando o token de refresh */
     .post(middlewaresAutenticacao.refresh, usuariosControlador.login)
 
   app
     .route('/usuario/login')
+    /** Faz o login solicitando token de bearer e refresh */
     .post(middlewaresAutenticacao.local, usuariosControlador.login)
 
   app
     .route('/usuario/logout')
+    /** Faz o logout invalidando todos os tokens: refresh e bearer */
     .post(
       [middlewaresAutenticacao.refresh, middlewaresAutenticacao.bearer],
       usuariosControlador.logout
-    )
+    );
 
   app
     .route('/usuario/verifica_email/:token')
+    /** Verifica email de usuário recém cadastrado */
     .get(
       middlewaresAutenticacao.verificacaoEmail,
       usuariosControlador.verificaEmail
-    )
+    );
 
   app
     .route('/usuario')
+    /** Adiciona um usuario */
     .post(usuariosControlador.adiciona)
-    .get(usuariosControlador.lista)
-
+    /** Lista todos os usuários */
+    .get(
+      [middlewaresAutenticacao.bearer],
+      usuariosControlador.lista
+    );
+    
   app
     .route('/usuario/:id')
-    .delete(middlewaresAutenticacao.bearer, usuariosControlador.deleta)
+    /** Exclui um usuario em particular */
+    .delete(
+      middlewaresAutenticacao.bearer, 
+      usuariosControlador.deleta
+    );
 }

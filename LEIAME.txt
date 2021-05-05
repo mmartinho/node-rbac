@@ -6,6 +6,7 @@ Data Início: 28/04/2021
 *********************************************************
 
 Capítulo 01: Controlando acesso com RBAC
+#RBAC
 
 1. Baixamos o código inicial a partir de:
         @see https://github.com/alura-cursos/1994-nodeauth3/archive/projeto-inicial.zip
@@ -27,4 +28,40 @@ Capítulo 01: Controlando acesso com RBAC
 
 Capítulo 02: Política de acesso
 
-1. 
+1. Política de Acesso de Conteúdo
+ 
+   Propósito: 
+        Informações necessárias sobre controle e acesso ao conteúdo no Blog do código
+ 
+   Autenticação: 
+        Antes de prosseguir com o uso da API, é necessário que crie uma nova conta através da rota
+        POST /usuário, e em seguida, verificar o e-mail da nova conta através da rota POST 
+        /usuario/verifica_email/:token.
+        
+        Com a conta criada e verificada, use a rota de login POST /usuario/login para obter um 
+        token de acesso através do cabeçalho Authorization na resposta. Use esse cabeçalho nas
+        demais requisições para se autenticar na API e prosseguir no controle de acesso ao 
+        conteúdo.
+
+   Controle de Conteúdo:
+        Temos o cargo de "assinante", ela apenas pode ler os post do Blog, os posts de qualquer pessoa.
+        Temos o cargo de "editor", que pode cadastrar novos posts e gerenciá-los.
+        Temos o cargo de "admin", é o cargo para as pessoas que vão gerenciar os usuários e posts.
+
+Capítulo 03: Controle de acesso baseado em permissões (PABC)
+#PABC, #ABAC, #isNaN_Function
+
+1. Instalamos o pacote do access control:
+        >npm install accesscontrol
+2. Criamos um novo objeto em:
+        @see src\controleDeAcesso.js
+   ...modificando o middleware de autorizacao, usando o novo controle de acesso PABC:
+        @see src\middlewares\autorizacao.js
+3. Usamos o novo middleware de autorizacao nas rotas dos posts:
+        @see src\posts\posts-rotas.js
+4. Criamos 2 novos middlewares para autenticacao e autorizacao opcionais:
+        @see src\middlewares\tentarAutenticar.js
+        @see src\middlewares\tentarAutorizar.js
+5. Aplicamos os novos middlewares na rota de lista de posts:
+        @see src\posts\posts-rotas.js
+
