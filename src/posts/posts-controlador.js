@@ -1,31 +1,29 @@
 const Post = require('./posts-modelo')
-const { InvalidArgumentError } = require('../erros')
+const ConversorPost = require('../conversores')
 
 module.exports = {
-  async adiciona (req, res) {
+  async adiciona (req, res, proximo) {
     try {
       req.body.autor = req.user.id
       const post = new Post(req.body)
       await post.adiciona()
-
       res.status(201).json(post)
     } catch (erro) {
-      if (erro instanceof InvalidArgumentError) {
-        return res.status(400).json({ erro: erro.message })
-      }
-      res.status(500).json({ erro: erro.message })
+      proximo(erro);
     }
   },
 
   async lista (req, res) {
     try {
       let posts = await Post.listarTodos()
-
+      const conversor = new ConversorPost('json');
       if(!req.estaAutenticado) {
-        posts = posts.map(posts => ({titulo: posts.titulo, conteudo: posts.conteudo}));
+        posts = posts.map(post => {
+          post.conteudo = post.conteudo.substr(0, 10) + '... você precisa assinar o blog para ler o restante do post';
+          return post;
+        });
       }
-
-      res.json(posts)
+      res.send(conversor.converter(posts));
     } catch (erro) {
       return res.status(500).json({ erro: erro.message })
     }
@@ -48,7 +46,11 @@ module.exports = {
       } else if (req.acesso.apenasSeu.permitido === true) {
           post = await Post.buscaPorIdAutor(req.params.id, req.user.id)
       }
-      post.remover()
+      if(post) 
+        post.remover();
+      else {
+        res.status(404).json({ erro: 'Post não encontrado'});
+      }  
       res.status(204)
       res.end()
     } catch (erro) {

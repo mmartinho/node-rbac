@@ -35,7 +35,7 @@ module.exports = app => {
     .post(usuariosControlador.adiciona)
     /** Lista todos os usuários */
     .get(
-      [middlewaresAutenticacao.bearer],
+      /*[middlewaresAutenticacao.bearer, autorizacao('usuario', 'ler')],*/
       usuariosControlador.lista
     );
     
@@ -43,7 +43,11 @@ module.exports = app => {
     .route('/usuario/:id')
     /** Exclui um usuario em particular */
     .delete(
-      middlewaresAutenticacao.bearer, 
+      /** 
+       * O Middleware "local" tem o intuito de servir de 
+       * uma confirmação para essa rota crítica 
+       * */
+      [middlewaresAutenticacao.bearer, /*middlewaresAutenticacao.local,*/ autorizacao('usuario', 'remover')], 
       usuariosControlador.deleta
     );
 }

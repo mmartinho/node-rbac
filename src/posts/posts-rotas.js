@@ -26,7 +26,11 @@ module.exports = app => {
     )
     /** Exclui um post em particular */
     .delete(
-      [middlewaresAutenticacao.bearer, autorizacao('post', 'remover')],
+      /** 
+       * O Middleware "local" tem o intuito de servir de 
+       * uma confirmação para essa rota crítica 
+       * */      
+      [middlewaresAutenticacao.bearer, middlewaresAutenticacao.local, autorizacao('post', 'remover')],
       postsControlador.remover
     );
 }

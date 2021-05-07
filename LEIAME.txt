@@ -65,3 +65,26 @@ Capítulo 03: Controle de acesso baseado em permissões (PABC)
 5. Aplicamos os novos middlewares na rota de lista de posts:
         @see src\posts\posts-rotas.js
 
+Capítulo 04: Confirmação de acesso e filtros
+
+1. Para evitar que rotas muito críticas sejam usadas inadivertidamente, por exemplo, a rota de exclusão de 
+   usuário ou post, adicionamos mais um middleware de autenticacao na rota, com o intuito de confirmar
+   que aquela rota é realmente a rota que desejamos
+        @see src\usuarios\usuarios-rotas.js
+        @see src\posts\posts-rotas.js
+2. Para "centralizar" os tipos de erros que nossa aplicação pode tratar, e evitar repetir tanto código, 
+   acrescentamos no servidor da API um middleware do express especialmente designado para tal:
+        @see server.js
+3. Removemos e adaptamos todos os tratamentos de erros espalhados na aplicação para que use o novo middleware:
+        @see src\usuarios\usuarios-controlador.js
+        @see src\usuarios\middlewares-autenticacao.js
+4. Criamos mais 2 classes de Error: "NaoEncontrado" e "NaoAutorizado" em:
+        @see src\erros.js
+   ...utilizando-a em:
+        @see src\usuarios\usuarios-modelo.js
+   ...e tratanto-a no middleware do servidor:
+        @server.js
+5. Criamos uma classe conversora de dados:
+        @see src\conversores.js
+
+
