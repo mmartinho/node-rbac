@@ -1,5 +1,5 @@
-const Post = require('./posts-modelo')
-const ConversorPost = require('../conversores')
+const Post = require('./posts-modelo');
+const { ConversorPost } = require('../conversores');
 
 module.exports = {
   async adiciona (req, res, proximo) {
@@ -16,7 +16,15 @@ module.exports = {
   async lista (req, res) {
     try {
       let posts = await Post.listarTodos()
-      const conversor = new ConversorPost('json');
+      /**
+       * Conversor de visualização em formato json que 
+       * define os atributos com acesso permitido  
+       */
+      const conversor = new ConversorPost('json', 
+        req.acesso.todos.permitido ? 
+        req.acesso.todos.atributos : 
+        req.acesso.apenasSeu.atributos
+      );
       if(!req.estaAutenticado) {
         posts = posts.map(post => {
           post.conteudo = post.conteudo.substr(0, 10) + '... você precisa assinar o blog para ler o restante do post';

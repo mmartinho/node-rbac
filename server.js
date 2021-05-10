@@ -1,4 +1,5 @@
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 const app = require('./app');
 const port = 3000;
@@ -8,7 +9,7 @@ require('./redis/blocklist-access-token');
 require('./redis/allowlist-refresh-token');
 
 const { InvalidArgumentError, NaoEncontrado, NaoAutorizado } = require('./src/erros');
-const jwt = require('jsonwebtoken');
+const { ConversorErro } = require('./src/conversores');
 
 /**
  * Middleare para definir o cabeçalho da resposta
@@ -28,6 +29,7 @@ routes(app);
  */
 app.use((erro, requisicao, resposta, proximo) => {
     let status = 500;
+    const conversor = new ConversorErro('json');
     const corpo = {
         mensagem : erro.message
     };
@@ -48,7 +50,7 @@ app.use((erro, requisicao, resposta, proximo) => {
         status = 401;
     } 
     resposta.status(status);
-    resposta.json(corpo);
+    resposta.send(conversor.converter(corpo));
 });
 
 app.listen(port, () => console.log('A API está funcionando!'));

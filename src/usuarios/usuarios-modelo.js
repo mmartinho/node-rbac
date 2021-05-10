@@ -3,7 +3,15 @@ const { InvalidArgumentError, NaoEncontrado } = require('../erros')
 const validacoes = require('../validacoes-comuns')
 const bcrypt = require('bcrypt')
 
+/**
+ * Modelo de Usuário
+ */
 class Usuario {
+  /**
+   * Recebe os dados de usuário e os atribui 
+   * a instancia
+   * @param {object} usuario 
+   */
   constructor (usuario) {
     this.id = usuario.id;
     this.nome = usuario.nome;
@@ -14,8 +22,11 @@ class Usuario {
     this.valida();
   }
 
+  /**
+   * @throws {InvalidArgumentError} Ocorre quando um usuário já está cadastrado com email passado a instancia
+   */
   async adiciona () {
-    if (await Usuario.buscaPorEmail(this.email)) {
+    if (await usuariosDao.buscaPorEmail(this.email)) {
       throw new InvalidArgumentError('O usuário já existe!')
     }
     await usuariosDao.adiciona(this)

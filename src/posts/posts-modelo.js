@@ -1,6 +1,9 @@
 const postsDao = require('./posts-dao')
 const validacoes = require('../validacoes-comuns')
 
+/**
+ * Modelo de Posts
+ */
 class Post {
   constructor (post) {
     this.id = post.id

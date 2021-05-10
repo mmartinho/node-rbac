@@ -35,7 +35,7 @@ module.exports = app => {
     .post(usuariosControlador.adiciona)
     /** Lista todos os usuários */
     .get(
-      /*[middlewaresAutenticacao.bearer, autorizacao('usuario', 'ler')],*/
+      [middlewaresAutenticacao.bearer, autorizacao('usuario', 'ler')],
       usuariosControlador.lista
     );
     

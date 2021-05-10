@@ -8,6 +8,7 @@ const controle = new AccessControl();
 
 controle
     .grant('assinante')
+    .readAny('usuario', ['nome'])
     .readAny('post', ['id','titulo','conteudo', 'autor']);
 
 controle

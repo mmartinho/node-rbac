@@ -1,5 +1,5 @@
-const Usuario = require('./usuarios-modelo')
-const { InvalidArgumentError } = require('../erros')
+const Usuario = require('./usuarios-modelo');
+const { ConversorUsuario } = require('../conversores');
 
 const tokens = require('./tokens')
 const { EmailVerificacao } = require('./emails')
@@ -54,8 +54,17 @@ module.exports = {
 
   async lista (req, res, proximo) {
     try {
-      const usuarios = await Usuario.lista()
-      res.json(usuarios)
+      const usuarios = await Usuario.lista();
+      /**
+       * Conversor de visualização em formato json que 
+       * define os atributos com acesso permitido  
+       */      
+      const conversor = new ConversorUsuario('json', 
+        req.acesso.todos.permitido ? 
+        req.acesso.todos.atributos : 
+        req.acesso.apenasSeu.atributos
+      );
+      res.send(conversor.converter(usuarios));
     } catch (erro) {
       proximo(erro);
     }

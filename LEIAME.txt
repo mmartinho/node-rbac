@@ -66,6 +66,7 @@ Capítulo 03: Controle de acesso baseado em permissões (PABC)
         @see src\posts\posts-rotas.js
 
 Capítulo 04: Confirmação de acesso e filtros
+#conversores
 
 1. Para evitar que rotas muito críticas sejam usadas inadivertidamente, por exemplo, a rota de exclusão de 
    usuário ou post, adicionamos mais um middleware de autenticacao na rota, com o intuito de confirmar
@@ -87,4 +88,29 @@ Capítulo 04: Confirmação de acesso e filtros
 5. Criamos uma classe conversora de dados:
         @see src\conversores.js
 
+Capítulo 05: Documentação de código
+#ESDOC
 
+1. Alteramos o construtor da classe ConversorPost para aceitar campos extras:
+        @see src\conversores.js
+2. Alteramos o método "lista" do controlador de posts para definir quais campos retornar de acordo com o "Cargo" 
+   do usuário logado:
+        @see src\posts\posts-controlador.js
+3. Criamos uma nova super classe chamada "Conversor", e a utilizamos para extender a classe "ConversorPost" e uma 
+   nova classe "ConversorUsuario":
+        @see src\conversores.js
+4. Alteramos o método "lista" do controlador de usuários para definir quais campos retornar de acordo com o "Cargo"
+   do usuário logado:
+        @see src\usuarios\usuarios-controlador.js
+5. Criamos uma nova classe extendendo de "Conversor" para definir os campos públicos para Erros: 
+        @see src\conversores.js
+6. Utilizamos a nova classe ConversorErro no middleware que trata os erros no servidor da app:
+        @see server.js
+7. Instalamos o ESDOC e o plugin para VS Code:
+        >npm install esdoc esdoc-standard-plugin
+   ...criando o seu arquivo principal executando no terminal o comando:
+        >echo '{"source": "./src", "destination": "./docs", "plugins": [{"name": "esdoc-standard-plugin"}]}' > .esdoc.json
+   ...adicionando novos parametros:
+        @see .esdoc.json
+   ...e executando o gerador de documentos:
+        >./node_modules/.bin/esdoc

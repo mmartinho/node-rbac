@@ -1,9 +1,7 @@
-class ConversorPost {
-    constructor(tipoDeConteudo) {
-        this.tipoDeConteudo = tipoDeConteudo;
-        this.camposPublicos = ['titulo','conteudo'];
-    }
-
+/**
+ * Classe BASE
+ */
+class Conversor {
     filtrar (dados) {
         if(Array.isArray(dados)) {
             dados = dados.map( (post) => this.filtrarObjeto(post));
@@ -24,7 +22,9 @@ class ConversorPost {
     }
 
     converter(dados) {
-        dados = this.filtrar(dados);
+        if(this.camposPublicos.indexOf('*') === -1 ){
+            dados = this.filtrar(dados);
+        }
         if(this.tipoDeConteudo === 'json') {
             return this.json(dados);
         }
@@ -35,4 +35,39 @@ class ConversorPost {
     }
 }
 
-module.exports = ConversorPost;
+/**
+ * Conversor de objetos "Post"
+ * @see src\posts\posts-modelo.js
+ */
+class ConversorPost extends Conversor {
+    constructor(tipoDeConteudo, camposExtras = []) {
+        super();
+        this.tipoDeConteudo = tipoDeConteudo;
+        this.camposPublicos = ['titulo','conteudo'].concat(camposExtras);
+    }
+}
+
+/**
+ * Conversor de objetos "Usuário"
+ * @see src\usuarios\usuarios-modelo.js
+ */
+class ConversorUsuario extends Conversor {
+    constructor(tipoDeConteudo, camposExtras = []) {
+        super();
+        this.tipoDeConteudo = tipoDeConteudo;
+        this.camposPublicos = ['nome'].concat(camposExtras);
+    }
+}
+
+/**
+ * Conversor de objetos "Erro"
+ */
+class ConversorErro extends Conversor {
+    constructor(tipoDeConteudo) {
+        super();
+        this.tipoDeConteudo = tipoDeConteudo;
+        this.camposPublicos = ['message', 'mensagem'];
+    }
+}
+
+module.exports = { ConversorPost, ConversorUsuario, ConversorErro };
