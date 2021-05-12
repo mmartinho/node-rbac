@@ -35,6 +35,10 @@ class Email {
   }
 }
 
+/**
+ * Mensagem de email para verificação se email existe
+ * @extends Email
+ */
 class EmailVerificacao extends Email {
   constructor (usuario, endereco) {
     super()
@@ -46,4 +50,33 @@ class EmailVerificacao extends Email {
   }
 }
 
-module.exports = { EmailVerificacao }
+/**
+ * Mensagem de email para Redefinição de senha
+ * @extends Email
+ */
+class EmailRedefinicaoSenha extends Email {
+  constructor (usuario, token) {
+    super();
+    this.from = '"Blog do Código" <noreply@blogdocodigo.com.br>';
+    this.to = usuario.email;
+    this.subject = 'Redefinação de Senha';
+    this.text = `Olá! Você pediu para redefinir sua senha. Use o token a seguir para trocar sua senha: ${token}`
+    this.html = `<h1>Olá!</h1> Você pediu para redefinir sua senha. Use o token a seguir para trocar sua senha: ${token}`
+  }
+}
+
+/**
+ * Mensagem de email para notificar sobre novo POST criado
+ * @extends Email
+ */
+class EmailPostCriado extends Email {
+  constructor (usuario, tituloPost) {
+        super()
+        this.from = '"Blog do Código" <noreply@blogdocodigo.com.br>'
+        this.to = usuario.email
+        this.subject = 'Novo post cadastrado no blog!';
+        this.text = `Olá! Você criou um novo post no blog e ele já foi publicado! Título: ${tituloPost}`
+        this.html = `<h1>Olá!</h1> Você criou um novo post no blog e ele já foi publicado!<br />. <br />Título: ${tituloPost}`
+  }
+}
+module.exports = { EmailVerificacao, EmailRedefinicaoSenha, EmailPostCriado }

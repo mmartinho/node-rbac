@@ -42,6 +42,10 @@ class Usuario {
     this.senhaHash = await Usuario.gerarSenhaHash(senha)
   }
 
+  atualizarSenha() {
+    return usuariosDao.atualizaSenha(this.senhaHash, this.id);  
+  }
+
   valida () {
     validacoes.campoStringNaoNulo(this.nome, 'nome');
     validacoes.campoStringNaoNulo(this.email, 'email');

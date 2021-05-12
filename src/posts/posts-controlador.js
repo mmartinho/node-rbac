@@ -1,13 +1,16 @@
 const Post = require('./posts-modelo');
 const { ConversorPost } = require('../conversores');
+const { EmailPostCriado } = require('../usuarios/emails');
 
 module.exports = {
   async adiciona (req, res, proximo) {
     try {
-      req.body.autor = req.user.id
-      const post = new Post(req.body)
-      await post.adiciona()
-      res.status(201).json(post)
+      req.body.autor = req.user.id;
+      const post = new Post(req.body);
+      await post.adiciona();
+      const email = new EmailPostCriado(req.user, post.titulo);
+      email.enviaEmail(); // envio assincrono
+      res.status(201).json(post);
     } catch (erro) {
       proximo(erro);
     }

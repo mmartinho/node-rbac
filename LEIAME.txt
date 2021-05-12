@@ -114,3 +114,31 @@ Capítulo 05: Documentação de código
         @see .esdoc.json
    ...e executando o gerador de documentos:
         >./node_modules/.bin/esdoc
+
+Capítulo 06: Recuperação de conta
+
+1. Acrescentamos uma nova rota de redefinição de senha em:
+        @see src\usuarios\usuarios-rotas.js
+   ...associada diretamente a novo método do controlador de usuários:
+        @see src\usuarios\usuarios-controlador.js
+2. Adicionamos uma nova classe de envio de emails para enviar o email de redefinição:
+        @see src\usuarios\emails.js
+3. Adicionamos mais um objeto token para a recuperação de senha:
+        @see src\usuarios\tokens.js
+   ...e criamos sua lista correspondente:
+        @see redis\lista-redefinicao-senha.js
+   ...usuando-a no objeto de token recém criando
+4. Usamos o objeto token no método "esqueciMinhaSenha()" do controlador do usuário:
+        @see src\usuarios\usuarios-controlador.js
+5. Agora precisamos da rota/método do controlador que efetive a troca da senha, 
+   para tal, adicionamos mais uma rota em:
+        @see src\usuarios\usuarios-rotas.js
+   ...e um novo método em:
+        @see src\usuarios\usuarios-controlador.js
+6. Adicionamos um método para atualizar a senha no modelo e no seu DAO:
+        @see src\usuarios\usuarios-modelo.js
+        @see src\usuarios\usuarios-dao.js
+7. Adicionamos uma nova classe de envio de emails para notificar o usuário sobre a criação de um novo Post:
+        @see src\usuarios\emails.js
+8. Usamos a classe instanciada no método "adiciona" do controlador dos Posts:
+        @see src\posts\posts-controlador.js

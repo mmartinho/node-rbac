@@ -2,7 +2,9 @@ const Usuario = require('./usuarios-modelo');
 const { ConversorUsuario } = require('../conversores');
 
 const tokens = require('./tokens')
-const { EmailVerificacao } = require('./emails')
+const { EmailVerificacao, EmailRedefinicaoSenha } = require('./emails')
+
+const { NaoEncontrado } = require('../erros');
 
 function geraEndereco (rota, token) {
   const baseURL = process.env.BASE_URL
@@ -88,5 +90,46 @@ module.exports = {
     } catch (erro) {
       proximo(erro);
     }
+  },
+
+  async esqueciMinhaSenha (req, res, proximo) {
+    const respostaPadrao = { 
+      mensagem : 
+        'Se encontramos um usuário com e-mail informado,'+ 
+        'vamos enviar uma mensagem com as instruções para '+
+        'redefinição de senha'
+    };
+    try {
+      const email = req.body.email;
+      const usuario = await Usuario.buscaPorEmail(email);
+      const token = await tokens.redefinicaoDeSenha.cria(usuario.id);
+      const emailRedefinicao = new EmailRedefinicaoSenha(usuario, token);
+      emailRedefinicao.enviaEmail();
+      res.send(respostaPadrao);
+    } catch (erro) {
+      /** 
+       * Para evitar que o usuário fique retentando eternamente, 
+       * "escodemos" o erro NaoEncontrado com uma resposta padrão
+       */
+      if(erro instanceof NaoEncontrado) {
+        res.send(respostaPadrao);
+        return;
+      }
+      proximo(erro);
+    }
+  },
+
+  async trocarSenha(req, res, proximo) {
+    try {
+      const senha = req.body.senha;
+      const token = req.body.token;
+      const id = await tokens.redefinicaoDeSenha.verifica(token);
+      const usuario = await Usuario.buscaPorId(id);
+      await usuario.adicionaSenha(senha);
+      usuario.atualizarSenha();
+      res.send({mensagem: 'Sua senha foi atualizada com sucesso'});
+    } catch (erro) {
+      proximo(erro);
+    }   
   }
 }

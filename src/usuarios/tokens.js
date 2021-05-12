@@ -4,8 +4,9 @@ const moment = require('moment')
 
 const { InvalidArgumentError } = require('../erros')
 
-const allowlistRefreshToken = require('../../redis/allowlist-refresh-token')
-const blocklistAccessToken = require('../../redis/blocklist-access-token')
+const allowlistRefreshToken = require('../../redis/allowlist-refresh-token');
+const blocklistAccessToken = require('../../redis/blocklist-access-token');
+const listaRedefinicao = require('../../redis/lista-redefinicao-senha');
 
 function criaTokenJWT (id, [tempoQuantidade, tempoUnidade]) {
   const payload = { id }
@@ -67,6 +68,9 @@ function verificaTokenEnviado (token, nome) {
 }
 
 module.exports = {
+  /**
+   * Objeto Token de Acesso
+   */
   access: {
     nome: 'access token',
     lista: blocklistAccessToken,
@@ -81,6 +85,9 @@ module.exports = {
       return invalidaTokenJWT(token, this.lista)
     }
   },
+  /**
+   * Objeto Token de atualização
+   */  
   refresh: {
     nome: 'refresh token',
     lista: allowlistRefreshToken,
@@ -95,6 +102,9 @@ module.exports = {
       return invalidaTokenOpaco(token, this.lista)
     }
   },
+  /**
+   * Objeto Token de verificação de email válido
+   */  
   verificacaoEmail: {
     nome: 'token de verificação de e-mail',
     expiracao: [1, 'h'],
@@ -104,5 +114,19 @@ module.exports = {
     verifica (token) {
       return verificaTokenJWT(token, this.nome)
     }
+  },
+  /**
+   * Objeto Token de redefinição de senha
+   */
+  redefinicaoDeSenha : {
+    nome: 'token de redefinição de senha',
+    lista: listaRedefinicao,
+    expiracao: [1, 'h'],  
+    cria(id) {
+      return criaTokenOpaco(id, this.expiracao, this.lista)
+    },
+    verifica (token) {
+      return verificaTokenOpaco(token, this.nome, this.lista)
+    },     
   }
 }

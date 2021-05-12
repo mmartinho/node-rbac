@@ -4,14 +4,23 @@ const autorizacao = require('../middlewares/autorizacao')
 
 module.exports = app => {
   app
+    .route('/usuario/trocar-senha')
+    .post(usuariosControlador.trocarSenha);
+
+  app
+    .route('/usuario/esqueci-minha-senha')
+    /** Procedimento de recuperação de senha */
+    .post(usuariosControlador.esqueciMinhaSenha);
+
+  app
     .route('/usuario/atualiza_token')
     /** Atualiza o token bearer usando o token de refresh */
-    .post(middlewaresAutenticacao.refresh, usuariosControlador.login)
+    .post(middlewaresAutenticacao.refresh, usuariosControlador.login);
 
   app
     .route('/usuario/login')
     /** Faz o login solicitando token de bearer e refresh */
-    .post(middlewaresAutenticacao.local, usuariosControlador.login)
+    .post(middlewaresAutenticacao.local, usuariosControlador.login);
 
   app
     .route('/usuario/logout')
